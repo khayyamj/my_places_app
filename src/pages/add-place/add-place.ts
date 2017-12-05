@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ModalController } from 'ionic-angular';
+import { Geolocation } from 'ionic-native';
 
 import { SetLocationPage } from '../set-location/set-location';
 import { Location } from '../../models/location';
@@ -14,6 +15,8 @@ export class AddPlacePage {
     lat: 40.234,
     lng: -111.659
   }
+  locationIsSet = false;
+
   constructor(private modalCtrl: ModalController) {}
 
   onSubmit(form: NgForm) {
@@ -21,7 +24,23 @@ export class AddPlacePage {
   }
 
   onOpenMap() {
-    const modal = this.modalCtrl.create(SetLocationPage, {location: this.location});
+    const modal = this.modalCtrl.create(SetLocationPage, {location: this.location, isSet: this.locationIsSet});
     modal.present();
+    modal.onDidDismiss(mapData => {
+      if (mapData) {
+        this.location = mapData.location;
+        this.locationIsSet = true;
+      }
+    });
+  }
+
+  onLocate() {
+    Geolocation.getCurrentPosition()
+      .then(location => {
+        this.location.lat = location.coords.latitude;
+        this.location.lng = location.coords.longitude;
+        this.locationIsSet = true;
+      })
+      .catch(error => console.log(error));
   }
 }

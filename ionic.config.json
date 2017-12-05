@@ -1,6 +1,6 @@
 {
   "name": "MyPlaces",
-  "app_id": "",
+  "app_id": "a5630ea4",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}
